@@ -2,28 +2,28 @@
 import React, { useContext, useEffect, useState } from "react";
 import Context from "@/contextApi/Context";
 import { useRouter } from "next/navigation";
-import stockApi from "@/api/stock";
 import Card from "@/components/Card";
 import authService from "@/api/auth";
 import toast from "react-hot-toast";
 import shareService from "@/api/share";
 
-function page() {
+// Renamed the component to start with an uppercase letter
+function PageComponent() {
   const router = useRouter();
-  const [query, setquery] = useState("");
-  const { user, setuser } = useContext(Context);
+  const [query, setQuery] = useState("");  // Fixed the camelCase naming convention
+  const { user, setUser } = useContext(Context); // Fixed the camelCase naming convention
 
-  const [allCollections, setallCollections] = useState([]);
+  const [allCollections, setAllCollections] = useState([]); // Fixed the camelCase naming convention
 
   async function getAllCollections() {
     try {
-      const user = await authService.me();
-      if (user.statusCode == 200) {
-        const allCollections = await shareService.fetchCollections({
-          collectionsId: user?.data.shared,
+      const userResponse = await authService.me();
+      if (userResponse.statusCode === 200) {
+        const allCollectionsResponse = await shareService.fetchCollections({
+          collectionsId: userResponse?.data.shared,
         });
 
-        setallCollections(allCollections.data);
+        setAllCollections(allCollectionsResponse.data);
       }
     } catch (e) {
       toast.error("Error while fetching collections");
@@ -33,9 +33,10 @@ function page() {
   useEffect(() => {
     if (!user) {
       router.push("/");
+    } else {
+      getAllCollections();
     }
-    getAllCollections();
-  }, []);
+  }, [user, router]); // Added router as a dependency to re-run the effect when router changes
 
   return (
     <div className="flex flex-col">
@@ -44,21 +45,19 @@ function page() {
       </div>
       <div className="flex flex-wrap">
         {allCollections.length > 0 ? (
-          allCollections?.map((collection) => {
-            return (
-              <Card
-                key={collection._id}
-                name={collection.name}
-                desc={collection.desc}
-                id={collection._id}
-                user={collection.user}
-                othercollections={allCollections}
-                setothercollections={setallCollections}
-                shareCollection={false}
-                date={new Date(collection.createdAt).toLocaleDateString()}
-              />
-            );
-          })
+          allCollections?.map((collection) => (
+            <Card
+              key={collection._id}
+              name={collection.name}
+              desc={collection.desc}
+              id={collection._id}
+              user={collection.user}
+              othercollections={allCollections}
+              setothercollections={setAllCollections}
+              shareCollection={false}
+              date={new Date(collection.createdAt).toLocaleDateString()}
+            />
+          ))
         ) : (
           <div className="w-full">
             <p className="w-96 mt-5 m-auto text-gray-500">
@@ -71,4 +70,4 @@ function page() {
   );
 }
 
-export default page;
+export default PageComponent;
