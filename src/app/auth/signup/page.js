@@ -8,40 +8,42 @@ import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 function Signup() {
-  const [formData, setformData] = useState({
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
 
-  const { user, setuser } = useContext(Context);
+  const { user, setUser } = useContext(Context);
+  const router = useRouter();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await authService.signup(formData);
-      if (response.statusCode == 200) {
-        toast("Registered successfully")
-        router.push("/")
+      if (response.statusCode === 200) {
+        toast.success("Registered successfully");
+        router.push("/");
       }
     } catch (e) {
       console.log(e);
     }
   };
-  const router = useRouter();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setformData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: value });
   };
 
   useEffect(() => {
     (async function get() {
       const data = await authService.me();
       if (data.statusCode === 200) {
-        setuser(data.data);
+        setUser(data.data);
         router.push("/");
       }
     })();
-  }, []);
+  }, [setUser, router]);
 
   return (
     <>
@@ -75,79 +77,77 @@ function Signup() {
                 Log in
               </Link>
             </p>
-            <form action="#" method="POST" className="mt-8">
+            <form onSubmit={handleSubmit} className="mt-8">
               <div className="space-y-5">
                 <div>
                   <label
-                    htmlFor=""
+                    htmlFor="name"
                     className="text-base font-medium text-gray-900"
                   >
-                    {" "}
-                    Full Name{" "}
+                    Full Name
                   </label>
                   <div className="mt-2">
                     <input
+                      id="name"
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
                       className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                       type="text"
                       placeholder="Full Name"
-                    ></input>
+                    />
                   </div>
                 </div>
                 <div>
                   <label
-                    htmlFor=""
+                    htmlFor="email"
                     className="text-base font-medium text-gray-900"
                   >
-                    {" "}
-                    Email address{" "}
+                    Email address
                   </label>
                   <div className="mt-2">
                     <input
+                      id="email"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
                       className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                       type="email"
                       placeholder="Email"
-                    ></input>
+                    />
                   </div>
                 </div>
                 <div>
                   <div className="flex items-center justify-between">
                     <label
-                      htmlFor=""
+                      htmlFor="password"
                       className="text-base font-medium text-gray-900"
                     >
-                      {" "}
-                      Password{" "}
+                      Password
                     </label>
                     <a
                       href="#"
                       title=""
                       className="text-sm font-semibold text-black hover:underline"
                     >
-                      {" "}
-                      Forgot password?{" "}
+                      Forgot password?
                     </a>
                   </div>
                   <div className="mt-2">
                     <input
+                      id="password"
                       name="password"
                       value={formData.password}
                       onChange={handleChange}
                       className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                       type="password"
                       placeholder="Password"
-                    ></input>
+                    />
                   </div>
                 </div>
                 <div>
                   <button
-                    onClick={handleSubmit}
-                    type="button"
+                    type="submit"
                     className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
                   >
                     Get started <ArrowRight className="ml-2" size={16} />
