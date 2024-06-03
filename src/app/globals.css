@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    background-color: hsl(170, 13%, 91%);
+    height: 150vh;
+}

@@ -1,0 +1,18 @@
+/* styles/MovingLine.css */
+@keyframes move-line {
+    0% {
+      transform: scaleX(0);
+    }
+    100% {
+      transform: scaleX(1);
+    }
+  }
+  
+  #moving-line {
+    transform-origin: left;
+  }
+  
+  #moving-line.animate {
+    animation: move-line 0.5s ease-out;
+  }
+  
